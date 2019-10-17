@@ -2,10 +2,16 @@
 
 var express = require('express');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 // Inicializar variables
 
 var app = express();
+
+//  BodyParser
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // Conexion DB
 
@@ -14,16 +20,18 @@ mongoose.connection.openUri('mongodb://localhost/canadoptaDB', (err, res) => {
     console.log('Base de Datos: \x1b[32m%s\x1b[0m', 'online');
 });
 
+
+// Importar rutas
+var usuarioRoutes = require('./routes/usuario');
+var loginRoutes = require('./routes/login');
+var appRoutes = require('./routes/app');
+
 // Rutas
 
-app.get('/', (req, res, next) => {
+app.use('/usuario', usuarioRoutes);
+app.use('/login', loginRoutes);
+app.use('/', appRoutes);
 
-    res.status(200).json({
-        ok: true,
-        mensaje: 'Petición realizada correctamente'
-    })
-
-});
 
 // Escuchar Peticiones
 
