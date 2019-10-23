@@ -23,13 +23,24 @@ mongoose.connection.openUri('mongodb://localhost/canadoptaDB', (err, res) => {
 
 // Importar rutas
 var usuarioRoutes = require('./routes/usuario');
+var centroRoutes = require('./routes/centro');
+var mascotaRoutes = require('./routes/mascota');
 var loginRoutes = require('./routes/login');
 var appRoutes = require('./routes/app');
+var busquedaRoutes = require('./routes/busqueda');
+var uploadRoutes = require('./routes/upload');
+var imagenesRoutes = require('./routes/imagenes');
 
 // Rutas
 
 app.use('/usuario', usuarioRoutes);
+app.use('/centro', centroRoutes);
+app.use('/mascota', mascotaRoutes);
 app.use('/login', loginRoutes);
+app.use('/busqueda', busquedaRoutes);
+app.use('/upload', uploadRoutes);
+app.use('/img', imagenesRoutes);
+
 app.use('/', appRoutes);
 
 
