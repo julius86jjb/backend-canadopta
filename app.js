@@ -49,3 +49,11 @@ app.use('/', appRoutes);
 app.listen(3001, () => {
     console.log('Express Server escuchando en puerto 3001: \x1b[32m%s\x1b[0m', 'online');
 });
+
+//idgooglesingin
+
+// 1023152870500-glc3619p64kein5ep5igdvtfhs7jngkd.apps.googleusercontent.com
+
+// secret id
+
+// fKb-_u-zdRRTEmYxyP70erAF
