@@ -8,23 +8,23 @@ let amplitudAdopcionValido = {
     message: '{VALUE} no es una amplitud de adopcion valida'
 }
 
-let provinciasValidas = {
-    values: ['A Coruña', 'Alava', 'Albacete', 'Alicante', 'Almería', 'Asturias', 'Avila', 'Badajoz', 'Barcelona', 'Burgos', 'Cáceres',
-        'Cádiz', 'Cantabria', 'Castellón', 'Ciudad Real', 'Córdoba', 'Cuenca', 'Gerona', 'Granada', 'Guadalajara',
-        'Guipúzcoa', 'Huelva', 'Huesca', 'Islas Baleares', 'Jaén', 'León', 'Lérida', 'Lugo', 'Madrid', 'Málaga', 'Murcia', 'Navarra',
-        'Ourense', 'Palencia', 'Las Palmas', 'Pontevedra', 'La Rioja', 'Salamanca', 'Segovia', 'Sevilla', 'Soria', 'Tarragona',
-        'Santa Cruz de Tenerife', 'Teruel', 'Toledo', 'Valencia', 'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
-    ],
-    message: '{VALUE} no es una provincia valida'
-}
+// let provinciasValidas = {
+//     values: ['A Coruña', 'Alava', 'Albacete', 'Alicante', 'Almería', 'Asturias', 'Avila', 'Badajoz', 'Barcelona', 'Burgos', 'Cáceres',
+//         'Cádiz', 'Cantabria', 'Castellón', 'Ciudad Real', 'Córdoba', 'Cuenca', 'Gerona', 'Granada', 'Guadalajara',
+//         'Guipúzcoa', 'Huelva', 'Huesca', 'Islas Baleares', 'Jaén', 'León', 'Lérida', 'Lugo', 'Madrid', 'Málaga', 'Murcia', 'Navarra',
+//         'Ourense', 'Palencia', 'Las Palmas', 'Pontevedra', 'La Rioja', 'Salamanca', 'Segovia', 'Sevilla', 'Soria', 'Tarragona',
+//         'Santa Cruz de Tenerife', 'Teruel', 'Toledo', 'Valencia', 'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
+//     ],
+//     message: '{VALUE} no es una provincia valida'
+// }
 
-let comunidadesValidas = {
-    values: ["Andalucía", "Aragón", "Canarias", "Cantabria", "Castilla y León", "Castilla-La Mancha", "Cataluña", "Ceuta",
-        "Comunidad Valenciana", "Comunidad de Madrid", "Extremadura", "Galicia", "Islas Baleares", "La Rioja", "Melilla",
-        "Navarra", "País Vasco", "Principado de Asturias", "Región de Murcia"
-    ],
-    message: '{VALUE} no es una comunidad autónoma valida'
-}
+// let comunidadesValidas = {
+//     values: ["Andalucía", "Aragón", "Canarias", "Cantabria", "Castilla y León", "Castilla-La Mancha", "Cataluña", "Ceuta",
+//         "Comunidad Valenciana", "Comunidad de Madrid", "Extremadura", "Galicia", "Islas Baleares", "La Rioja", "Melilla",
+//         "Navarra", "País Vasco", "Principado de Asturias", "Región de Murcia"
+//     ],
+//     message: '{VALUE} no es una comunidad autónoma valida'
+// }
 
 let tiposCentrosValidos = {
     values: ['Protectora', 'Albergue', 'Refugio', 'Perrera'],
@@ -32,38 +32,43 @@ let tiposCentrosValidos = {
 }
 
 let centroSchema = new Schema({
-    usuario: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario'
-    },
+
     nombre: {
         type: String,
         required: [true, 'El nombre es un campo requerido']
-    },
-    tipoCentro: {
-        type: String,
-        required: [true, 'El tipo de centro es un campo requerido'],
-        enum: tiposCentrosValidos
-    },
-    email: {
-        type: String,
-        required: [true, ' El email es un campo requerido'],
-        unique: true
     },
     telefono: {
         type: String,
         required: [true, ' El teléfono de contacto es un campo requerido'],
         unique: true
     },
-    telefono2: {
+    usuario: {
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario',
+        required: [true, 'El id del usuario es un campo obligatorio']
+    },
+    direccion_comunidad: { type: String, required: [true, ' La comunidad autónoma  es un campo requerido'] },
+    direccion_provincia: { type: String, required: [true, ' La provincia es un campo requerido'] },
+
+    tipoCentro: {
         type: String,
-        unique: true
+        enum: tiposCentrosValidos
+    },
+    email: {
+        type: String
+    },
+    telefono2: {
+        type: String
+    },
+    img: {
+        type: String,
+        required: false
     },
     web: {
-        type: String,
-        unique: true
+        type: String
     },
     personaContacto: { type: String, },
+
     descripcion: { type: String, },
     procesoAdopcion: { type: String, },
     amplitudAdopcion: {
@@ -77,8 +82,7 @@ let centroSchema = new Schema({
     },
     direccion_calle: { type: String },
     direccion_numero: { type: String, },
-    direccion_provincia: { type: String, enum: provinciasValidas },
-    direccion_comunidad: { type: String, enum: comunidadesValidas },
+
     direccion_CP: { type: String, },
     mapa_lat: { type: String, },
     mapa_lon: { type: String, },
@@ -91,6 +95,9 @@ let centroSchema = new Schema({
         type: Date,
         required: true,
         default: Date.now()
+    },
+    ultimaConexion: {
+        type: Date
     }
 
 

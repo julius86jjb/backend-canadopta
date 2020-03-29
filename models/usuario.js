@@ -22,16 +22,16 @@ let usuarioSchema = new Schema({
         required: [true, ' El email es un campo requerido'],
         unique: true
     },
-    telefono: {
-        type: String,
-        required: [true, ' El teléfono de contacto es un campo requerido'],
-        unique: true
-    },
+
     password: {
         type: String,
         required: [true, 'El password es un campo requerido']
     },
     img: {
+        type: String,
+        required: false
+    },
+    telefono: {
         type: String,
         required: false
     },
@@ -42,17 +42,11 @@ let usuarioSchema = new Schema({
     },
     verificado: {
         type: Boolean,
-        default: false,
-        required: true
+        default: false
     },
     google: {
         type: Boolean,
         default: false
-    },
-    centro: {
-        type: Schema.Types.ObjectId,
-        ref: 'Centro',
-        required: false
     },
     ultimaConexion: {
         type: Date

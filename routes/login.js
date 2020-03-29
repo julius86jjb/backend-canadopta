@@ -34,9 +34,16 @@ async function verify(token) {
         audience: CLIENT_ID
     });
     const payload = ticket.getPayload();
+    console.log(payload.family_name);
+    if (payload.family_name === undefined) {
+        var ap = ' ';
+    } else {
+        var ap = payload.family_name;
+    }
 
     return {
-        nombre: payload.name,
+        nombre: payload.given_name,
+        apellidos: ap,
         email: payload.email,
         img: payload.picture,
         google: true
@@ -59,6 +66,7 @@ app.post('/google', async(req, res) => {
 
         });
 
+    console.log(googleUser);
     Usuario.findOne({ email: googleUser.email }, (err, usuarioDB) => {
         if (err) {
             return res.status(500).json({
@@ -71,9 +79,9 @@ app.post('/google', async(req, res) => {
         if (usuarioDB) {
             //exsite en nuestra DB pero se registro sin google
             if (usuarioDB.google === false) {
-                return res.status(400).json({
+                return res.status(455).json({
                     ok: false,
-                    mensaje: 'Debe de usar su autenticacion normal',
+                    mensaje: 'Debe de usar su autenticacion normal, inicie sesión sin Google',
                 });
             } else {
                 let token = jwt.sign({ usuario: usuarioDB }, SEED, { expiresIn: 14400 })
@@ -83,17 +91,19 @@ app.post('/google', async(req, res) => {
                     usuario: usuarioDB,
                     token: token,
                     id: usuarioDB.id,
-                    menu: obtenerMenu(usuarioDB.role)
-                        // token: token
+                    // menu: obtenerMenu(usuarioDB.role)
+                    // token: token
                 })
             }
         } else {
             // el usuario no existe en nuestra DB
             var usuario = new Usuario();
             usuario.nombre = googleUser.nombre;
+            usuario.apellidos = googleUser.apellidos;
             usuario.email = googleUser.email;
             usuario.img = googleUser.img;
             usuario.google = true;
+            usuario.verificado = true;
             usuario.password = ';)';
 
             usuario.save((err, usuarioDB) => {
@@ -112,7 +122,7 @@ app.post('/google', async(req, res) => {
                     usuario: usuarioDB,
                     token: token,
                     id: usuarioDB._id,
-                    menu: obtenerMenu(usuarioDB.role)
+                    // menu: obtenerMenu(usuarioDB.role)
                 })
             })
         }
@@ -129,6 +139,7 @@ app.post('/', (req, res) => {
 
 
     let body = req.body;
+    console.log(body.password);
 
     Usuario.findOne({ email: body.email }, (err, UsuarioDB) => {
         if (err) {
@@ -142,17 +153,27 @@ app.post('/', (req, res) => {
         if (!UsuarioDB) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'Credenciales incorrectas',
+                mensaje: 'Email o contraseña incorrecto/a',
                 errors: err
             })
         }
+        console.log(UsuarioDB.password)
         if (!bcrypt.compareSync(body.password, UsuarioDB.password)) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'Credenciales incorrectas',
+                mensaje: 'Email o contraseña incorrecto/a',
                 errors: err
             })
         }
+        // console.log(UsuarioDB.verificado);
+        // if (!UsuarioDB.verificado) {
+        //     return res.status(414).json({
+        //         ok: false,
+        //         mensaje: 'El email aún no ha sido confirmado',
+        //         errors: err,
+        //         id: UsuarioDB._id
+        //     })
+        // }
 
         UsuarioDB.password = ':)';
         // let token = jwt.sign({ usuario: UsuarioDB }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN })

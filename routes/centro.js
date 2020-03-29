@@ -19,7 +19,6 @@ app.get('/', [mdAuteticacion.verificaToken], (req, res, next) => {
     desde = Number(desde);
 
     Centro.find({})
-        .populate('usuario', 'nombre email')
         .skip(desde)
         .limit(10)
         .exec(
@@ -54,7 +53,6 @@ app.get('/:id', (req, res, next) => {
     let id = req.params.id;
 
     Centro.findById(id)
-        .populate('usuario', 'nombre email img')
         .exec(
             (err, centro) => {
                 if (err) {
@@ -86,17 +84,20 @@ app.get('/:id', (req, res, next) => {
 // =========================================================
 
 
-app.post('/', [mdAuteticacion.verificaToken], function(req, res) {
+app.post('/', function(req, res) {
 
     let body = req.body;
 
     let centro = new Centro({
-        usuario: req.usuario._id,
         nombre: body.nombre,
+        telefono: body.telefono,
+        usuario: body.usuario,
+        direccion_comunidad: body.direccion_comunidad,
+        direccion_provincia: body.direccion_provincia,
         tipoCentro: body.tipoCentro,
         email: body.email,
-        telefono: body.telefono,
         telefono2: body.telefono2,
+        img: body.img,
         web: body.web,
         personaContacto: body.personaContacto,
         descripcion: body.descripcion,
@@ -105,17 +106,16 @@ app.post('/', [mdAuteticacion.verificaToken], function(req, res) {
         totalAdoptables: body.totalAdoptables,
         direccion_calle: body.direccion_calle,
         direccion_numero: body.direccion_numero,
-        direccion_provincia: body.direccion_provincia,
-        direccion_comunidad: body.direccion_comunidad,
         direccion_CP: body.direccion_CP,
         mapa_lat: body.mapa_lat,
         mapa_lon: body.mapa_lon,
+        logo: body.logo,
         facebook: body.facebook,
         instagram: body.instagram,
         twitter: body.twitter,
         youtube: body.youtube,
-
-
+        fechaRegistro: Date.now(),
+        ultimaConexion: Date.now()
     })
 
     centro.save((err, centroDB) => {
@@ -166,7 +166,6 @@ app.put('/:id', [mdAuteticacion.verificaToken, mdAuteticacion.verificaADMIN_o_Mi
             })
         }
 
-        centro.usuario = req.usuario._id;
         centro.nombre = body.nombre;
         centro.tipoCentro = body.tipoCentro;
         centro.email = body.email;
@@ -174,6 +173,7 @@ app.put('/:id', [mdAuteticacion.verificaToken, mdAuteticacion.verificaADMIN_o_Mi
         centro.telefono2 = body.telefono2;
         centro.web = body.web;
         centro.personaContacto = body.personaContacto;
+        centro.emailPersonaContacto = body.emailPersonaContacto;
         centro.descripcion = body.descripcion;
         centro.procesoAdopcion = body.procesoAdopcion;
         centro.amplitudAdopcion = body.amplitudAdopcion;
@@ -200,6 +200,7 @@ app.put('/:id', [mdAuteticacion.verificaToken, mdAuteticacion.verificaADMIN_o_Mi
                 })
             }
 
+            centroGuardado.password = ':)';
 
             res.status(200).json({
                 ok: true,
